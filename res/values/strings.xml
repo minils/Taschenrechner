@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, TaschenrechnerActivity!</string>
+    <string name="app_name">Taschenrechner</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="mal">*</string>
+    <string name="geteilt">/</string>
+    <string name="gleich">=</string>
+    <string name="ergebnis">Ergebnis: </string>
+
+</resources>
