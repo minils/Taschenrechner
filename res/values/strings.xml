@@ -8,6 +8,6 @@
     <string name="mal">*</string>
     <string name="geteilt">/</string>
     <string name="gleich">=</string>
-    <string name="ergebnis">Ergebnis: </string>
+    <string name="ergebnis">Ergebnis</string>
 
 </resources>

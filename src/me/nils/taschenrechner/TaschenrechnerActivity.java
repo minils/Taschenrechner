@@ -2,13 +2,15 @@ package me.nils.taschenrechner;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TaschenrechnerActivity extends Activity {
+public class TaschenrechnerActivity extends Activity implements OnClickListener {
 	
 	// Lege Instanzvariablen fest:
 	
@@ -16,6 +18,10 @@ public class TaschenrechnerActivity extends Activity {
 	private Button minusButton;
 	private Button malButton;
 	private Button geteiltButton;
+	private Button ergebnisButton;
+	
+	private EditText zahlInput1;
+	private EditText zahlInput2;
 	
 	private TextView rechenartAnzeige;
 	private TextView ergebnisAnzeige;
@@ -29,68 +35,93 @@ public class TaschenrechnerActivity extends Activity {
 	private float ergebnis;
 	
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate (Bundle savedInstanceState ) {
     	
     	// Rufe Eltern-Klasse auf:
-        super.onCreate(savedInstanceState);
+        super.onCreate( savedInstanceState );
         
         // Setzte main.xml als Layout:
-        setContentView(R.layout.main);
+        setContentView( R.layout.main );
         
-        // Registriere Buttons, TextViews und Listener
-        rechenartAnzeige = (TextView) findViewById(R.id.rechenart);
-        ergebnisAnzeige = (TextView) findViewById(R.id.ergebnis);
+        // Registriere Buttons, TextViews, EditText und Listener
+        rechenartAnzeige = (TextView) findViewById( R.id.rechenart );
+        ergebnisAnzeige = (TextView) findViewById( R.id.ergebnis );      
         
-        OnClickListener listener = new OnClickListener() {
-        	public void onClick(View v) {
-        		// Id des Gedrückten Buttons:
-        		int buttonId = v.getId();
-        		// testen, welcher Button gedrückt wurde:
-        		switch (buttonId) {
-        			case R.id.plus: rechenart = "+";
-        			case R.id.minus: rechenart = "-";
-        			case R.id.mal: rechenart = "*";
-        			case R.id.geteilt: rechenart = "/";
-        			case R.id.gleich: ausrechnen();
-        		}
-        		// wenn Rechenart gesetzt wurde, in TextView anzeigen:
-        		if (rechenart != null) {
-        			rechenartAnzeige.setText(rechenart);
-        		}
-        	}
-        };        
+        plusButton = (Button) findViewById( R.id.plus );
+        plusButton.setOnClickListener( this );
         
-        plusButton = (Button) findViewById(R.id.plus);
-        plusButton.setOnClickListener( listener );
+        minusButton = (Button) findViewById( R.id.minus );
+        minusButton.setOnClickListener( this );
         
-        minusButton = (Button) findViewById(R.id.minus);
-        minusButton.setOnClickListener( listener );
+        malButton = (Button) findViewById( R.id.mal );
+        malButton.setOnClickListener( this );
         
-        malButton = (Button) findViewById(R.id.mal);
-        malButton.setOnClickListener( listener );
+        geteiltButton = (Button) findViewById( R.id.geteilt );
+        geteiltButton.setOnClickListener( this );
         
-        geteiltButton = (Button) findViewById(R.id.geteilt);
-        geteiltButton.setOnClickListener( listener );
+        ergebnisButton = (Button) findViewById( R.id.gleich );
+        ergebnisButton.setOnClickListener( this );
+        
+        zahlInput1 = (EditText) findViewById( R.id.zahl1 );
+        zahlInput2 = (EditText) findViewById( R.id.zahl2 );
         
     }
 
 	protected void ausrechnen() {
-		if (rechenart != null && zahlenGesetzt) {
-			if (rechenart == "+") {
+		
+		try {
+			
+			String zahl1String = zahlInput1.getText().toString();
+			String zahl2String = zahlInput2.getText().toString();
+			
+			if ( zahl1String != "" && zahl2String != "" ) {
+				zahl1 = Float.valueOf( zahl1String ).floatValue();
+				zahl2 = Float.valueOf( zahl2String ).floatValue();
+				zahlenGesetzt = true;
+			}
+			
+		} catch (Exception e) {
+			Log.d( "FEHLER", e.getMessage() );
+		}
+		
+		// wenn Rechenart feststeht und zwei Zahlen eingegeben wurden:
+		if ( rechenart != null && zahlenGesetzt ) {
+			if ( rechenart == "+" ) {
 				ergebnis = zahl1 + zahl2;
-			} else if (rechenart == "-") {
+			} else if ( rechenart == "-" ) {
 				ergebnis = zahl1 - zahl2;
-			} else if (rechenart == "*") {
+			} else if ( rechenart == "*" ) {
 				ergebnis = zahl1 * zahl2;
-			} else if (rechenart == "/") {
+			} else if ( rechenart == "/" ) {
 				ergebnis = zahl1 / zahl2;
 			}
-			String ergebnisString = Integer.toString( (int) ergebnis );
+			String ergebnisString = Float.toString( ergebnis );
 			ergebnisAnzeige.setText(  ergebnisString );
 		} else {
 			Toast t = new Toast( this );
 			t = Toast.makeText(this, "Bitte alles ausfüllen!", Toast.LENGTH_SHORT);
 			t.show();
+		}
+	}
+
+	// Wenn Button geklickt wurde:
+	@Override
+	public void onClick(View v) {
+		// rechenart festlegen:
+		if (v == plusButton) {
+			rechenart = "+";
+		} else if(v == minusButton) {
+			rechenart = "-";
+		} else if (v == malButton) {
+			rechenart = "*";
+		} else if (v == geteiltButton) {
+			rechenart ="/";
+		} else if (v == ergebnisButton) {
+			ausrechnen();
+		}
+		// wenn Rechenart gesetzt wurde, in TextView anzeigen:
+		if (rechenart != null) {
+			rechenartAnzeige.setText(rechenart);
 		}
 	}
     
